@@ -18,3 +18,4 @@ db = Database()
 
 print(db.dbget('cash', 99889896))
 
+print(2)
