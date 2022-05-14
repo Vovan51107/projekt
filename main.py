@@ -1,6 +1,5 @@
 import sqlite3
 import telebot
-import sqlite3
 
 class Database():
     def __init__(self):
@@ -9,13 +8,17 @@ class Database():
     
     def dbget(self, arg_name, arg_id):
         self.cursor.execute(f'SELECT "{arg_name}" FROM users WHERE user_id="{arg_id}"')
-        result = self.cursor.fetchall()
-        return result[0][0]
-    def dbupgrade(self, arg_name, arg_id, arg_content):
-        self.cursor.execute(f"UPDATE users SET {arg_name} = {arg_content} WHERE userID = {arg_id}")
+        result = self.cursor.fetchone()
+        return result[0]
+    def dbupdate(self, arg_name, arg_id, arg_content):
+        self.cursor.execute(f"UPDATE users SET {arg_name} = {arg_content} WHERE user_id = {arg_id}")
+        self.conn.commit()
+    def dbreg():
+        pass
 
 db = Database()
 
-print(db.dbget('cash', 99889896))
+db.dbupdate('cash', 99889896, 300)
 
-print(2)
+print(int(db.dbget('cash', 99889896)) + 5)
+
