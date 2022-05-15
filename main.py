@@ -13,12 +13,9 @@ class Database():
     def dbupdate(self, arg_name, arg_id, arg_content):
         self.cursor.execute(f"UPDATE users SET {arg_name} = {arg_content} WHERE user_id = {arg_id}")
         self.conn.commit()
-    def dbreg():
-        pass
+    def dbreg(self, *arg_content):
+        self.cursor.execute(f'INSERT INTO users VALUES (?,?,?)', (arg_content[0], arg_content[1], arg_content[2]))
+        self.conn.commit()
 
 db = Database()
-
-db.dbupdate('cash', 99889896, 300)
-
-print(int(db.dbget('cash', 99889896)) + 5)
 
