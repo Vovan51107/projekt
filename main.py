@@ -151,7 +151,7 @@ def work(callback, name, chance, money, code, stam):
         sqlite3.connect('proekteko.db', check_same_thread=False).cursor.execute(
             f'DELETE FROM users WHERE user_id={callback.message.chat.id}')
 
-    # хп, профиле, еда, покупки (выплата долга)
+    # хп, еда, покупки (выплата долга)
 
 
 @bot.message_handler(commands=['sleep'])
