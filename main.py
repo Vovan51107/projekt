@@ -67,7 +67,7 @@ def rules(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    bot.send_message(message.chat.id, '/start - Регистрация нового персонажа \n/rules - Правила игры \n/help - Помощь (вы её сейчас ввели) \n/work - Меню работы \n/sleep - сон, восстанавливает очки усталости \n/eat - еда, восстонавливает очки усталости и очки здоровья (платно) \n/p или /passport - показывает информацию о вашем персонаже и его состояние (в том числе и баланс, кол-во очков здоровья и усталости')
+    bot.send_message(message.chat.id, '/start - Регистрация нового персонажа \n/rules - Правила игры \n/help - Помощь (вы её сейчас ввели) \n/work - Меню работы \n/sleep - сон, восстанавливает очки усталости \n/eat - еда, восстонавливает очки усталости и очки здоровья (платно), в разработке \n/p или /passport - показывает информацию о вашем персонаже и его состояние (в том числе и баланс, кол-во очков здоровья и усталости')
 
 
 @bot.message_handler(commands=['work'])
@@ -75,23 +75,17 @@ def work_choice(message):
     data = db.dbgetdata('user_id', message.chat.id)
     if data != None:
         start_keyboard = types.InlineKeyboardMarkup()
-        cleaner = types.InlineKeyboardButton(
-            text='Уборщик', callback_data='clean')
+        cleaner = types.InlineKeyboardButton(text='Уборщик', callback_data='clean')
         doctor = types.InlineKeyboardButton(text='Врач', callback_data='doc')
         miner = types.InlineKeyboardButton(text='Шахтёр', callback_data='mine')
-        trucker = types.InlineKeyboardButton(
-            text='Водитель грузовика', callback_data='truck')
-        office = types.InlineKeyboardButton(
-            text='Офисный работник', callback_data='office')
-        factory = types.InlineKeyboardButton(
-            text='Заводской работник', callback_data='fac')
-        #criminal = types.InlineKeyboardButton(text='Преступление', callback_data='crime')
+        trucker = types.InlineKeyboardButton(text='Водитель грузовика', callback_data='truck')
+        office = types.InlineKeyboardButton(text='Офисный работник', callback_data='office')
+        factory = types.InlineKeyboardButton(text='Заводской работник', callback_data='fac')
+        '''criminal = types.InlineKeyboardButton(text='Преступление', callback_data='crime')'''
         taxi = types.InlineKeyboardButton(text='Таксист', callback_data='taxi')
-        military = types.InlineKeyboardButton(
-            text='Военный', callback_data='Military')
-        sent = 'Информация о работе:\nУборщик: Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\nШахтёр: Зарплата-7000'
-        start_keyboard.add(cleaner, miner, factory, office,
-                           taxi, trucker, doctor, military)
+        military = types.InlineKeyboardButton(text='Военный', callback_data='Military')
+        sent = 'Информация о работе:\nУборщик: Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\nШахтёр: Зарплата-7000 ботлингов, Потребление очков усталости-40, Шанс успеха 60%\nЗаводской работник: Зарплата-3000 ботлингов, Потребление очков усталости-30, Шанс успеха-55%\nОфисный работник: Зарплата-3600 ботлингов, Потребление очков усталости-20, Шанс успеха 75%\nТаксист: Зарплата-2600 ботлингов, Потребление очков усталости-15, Шанс успеха 65%\nВодитель грузовика: Зарплата-3500 ботлингов, Потребление очков усталости-25, Шанс успеха 65%\nВрач: Зарплата-7500 ботлингов, Потребление очков усталости-40, Шанс успеха 75%\nВоенный: Зарплата-9600 ботлингов, Потребление очков усталости-35, Шанс успеха 45%'
+        start_keyboard.add(cleaner, miner, factory, office, taxi, trucker, doctor, military)
         bot.send_message(message.chat.id, sent, reply_markup=start_keyboard)
 
 
@@ -99,29 +93,21 @@ def work_choice(message):
 def answer_callback(callback):
     sent = bot.send_message(callback.message.chat.id, "Вы ушли на работу")
     if callback.data == "clean":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Уборщик', 90, 1000, 'clean', 25))
+        bot.register_next_step_handler(sent, work(callback, 'Уборщик', 90, 1000, 'clean', 25))
     elif callback.data == "doc":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Врач', 75, 7500, 'doc', 40))
+        bot.register_next_step_handler(sent, work(callback, 'Врач', 75, 7500, 'doc', 40))
     elif callback.data == "mine":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Шахтёр', 60, 7000, 'mine', 40))
+        bot.register_next_step_handler(sent, work(callback, 'Шахтёр', 60, 7000, 'mine', 40))
     elif callback.data == "truck":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Водитель грузовика', 65, 2600, 'truck', 15))
+        bot.register_next_step_handler(sent, work(callback, 'Водитель грузовика', 65, 2600, 'truck', 15))
     elif callback.data == "office":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Офисный работник', 75, 3600, 'office', 20))
+        bot.register_next_step_handler(sent, work(callback, 'Офисный работник', 75, 3600, 'office', 20))
     elif callback.data == "fac":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Заводской работник', 55, 3000, 'fac', 30))
+        bot.register_next_step_handler(sent, work(callback, 'Заводской работник', 55, 3000, 'fac', 30))
     elif callback.data == "taxi":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Таксист', 65, 2600, 'taxi', 15))
+        bot.register_next_step_handler(sent, work(callback, 'Таксист', 65, 2600, 'taxi', 15))
     elif callback.data == "Military":
-        bot.register_next_step_handler(sent, work(
-            callback, 'Военный', 45, 9600, 'Military', 35))
+        bot.register_next_step_handler(sent, work(callback, 'Военный', 45, 9600, 'Military', 35))
 
 
 '''  elif callback.data == "crime":
