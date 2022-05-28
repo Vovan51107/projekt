@@ -35,8 +35,8 @@ class Database():
 
 db = Database()
 bot = telebot.TeleBot("5358126269:AAGiVX4xe6_2x7IBdjODm3y61aG2JgiPx5I")
-works_status = {'clean': True, 'mine': True, 'fac': True, 'office': True,
-                'taxi': True, 'truck': True, 'doc': True, 'Military': True, 'crime': True}
+works_status = {'Уборщик': True, 'Шахтёр': True, 'Заводской работник': True, 'Офисный работник': True,
+                'Таксист': True, 'Водитель грузовика': True, 'Врач': True, 'Военный': True, } #'crime': True
 print('Бот включён')
 
 
@@ -75,69 +75,75 @@ def work_choice(message):
     data = db.dbgetdata('user_id', message.chat.id)
     if data != None:
         start_keyboard = types.InlineKeyboardMarkup()
-        cleaner = types.InlineKeyboardButton(text='Уборщик', callback_data='clean')
-        doctor = types.InlineKeyboardButton(text='Врач', callback_data='doc')
-        miner = types.InlineKeyboardButton(text='Шахтёр', callback_data='mine')
-        trucker = types.InlineKeyboardButton(text='Водитель грузовика', callback_data='truck')
-        office = types.InlineKeyboardButton(text='Офисный работник', callback_data='office')
-        factory = types.InlineKeyboardButton(text='Заводской работник', callback_data='fac')
+        cleaner = types.InlineKeyboardButton(text='Уборщик', callback_data='Уборщик')
+        miner = types.InlineKeyboardButton(text='Шахтёр', callback_data='Шахтёр')
+        factory = types.InlineKeyboardButton(text='Заводской работник', callback_data='Заводской работник')
+        office = types.InlineKeyboardButton(text='Офисный работник', callback_data='Офисный работник')
+        taxi = types.InlineKeyboardButton(text='Таксист', callback_data='Таксист')
+        trucker = types.InlineKeyboardButton(text='Водитель грузовика', callback_data='Водитель грузовика')
+        doctor = types.InlineKeyboardButton(text='Врач', callback_data='Врач')
         '''criminal = types.InlineKeyboardButton(text='Преступление', callback_data='crime')'''
-        taxi = types.InlineKeyboardButton(text='Таксист', callback_data='taxi')
-        military = types.InlineKeyboardButton(text='Военный', callback_data='Military')
-        sent = 'Информация о работе:\nУборщик: Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\nШахтёр: Зарплата-7000 ботлингов, Потребление очков усталости-40, Шанс успеха 60%\nЗаводской работник: Зарплата-3000 ботлингов, Потребление очков усталости-30, Шанс успеха-55%\nОфисный работник: Зарплата-3600 ботлингов, Потребление очков усталости-20, Шанс успеха 75%\nТаксист: Зарплата-2600 ботлингов, Потребление очков усталости-15, Шанс успеха 65%\nВодитель грузовика: Зарплата-3500 ботлингов, Потребление очков усталости-25, Шанс успеха 65%\nВрач: Зарплата-7500 ботлингов, Потребление очков усталости-40, Шанс успеха 75%\nВоенный: Зарплата-9600 ботлингов, Потребление очков усталости-35, Шанс успеха 45%'
+        military = types.InlineKeyboardButton(text='Военный', callback_data='Военный')
+        sent = '*Информация о работе:*\n*Уборщик:* Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\n*Шахтёр:* Зарплата-7000 ботлингов, Потребление очков усталости-40, Шанс успеха 60%\n*Заводской работник:* Зарплата-3000 ботлингов, Потребление очков усталости-30, Шанс успеха-55%\n*Офисный работник:* Зарплата-3600 ботлингов, Потребление очков усталости-20, Шанс успеха 75%\n*Таксист:* Зарплата-2600 ботлингов, Потребление очков усталости-15, Шанс успеха 65%\n*Водитель грузовика:* Зарплата-3500 ботлингов, Потребление очков усталости-25, Шанс успеха 65%\n*Врач:* Зарплата-7500 ботлингов, Потребление очков усталости-40, Шанс успеха 75%\n*Военный:* Зарплата-9600 ботлингов, Потребление очков усталости-35, Шанс успеха 45%'
         start_keyboard.add(cleaner, miner, factory, office, taxi, trucker, doctor, military)
-        bot.send_message(message.chat.id, sent, reply_markup=start_keyboard)
+        bot.send_message(message.chat.id, sent, parse_mode= 'Markdown', reply_markup=start_keyboard)
 
 
 @bot.callback_query_handler(func=lambda c: c.data)
 def answer_callback(callback):
     sent = bot.send_message(callback.message.chat.id, "Вы ушли на работу")
-    if callback.data == "clean":
-        bot.register_next_step_handler(sent, work(callback, 'Уборщик', 90, 1000, 'clean', 25))
-    elif callback.data == "doc":
-        bot.register_next_step_handler(sent, work(callback, 'Врач', 75, 7500, 'doc', 40))
-    elif callback.data == "mine":
-        bot.register_next_step_handler(sent, work(callback, 'Шахтёр', 60, 7000, 'mine', 40))
-    elif callback.data == "truck":
-        bot.register_next_step_handler(sent, work(callback, 'Водитель грузовика', 65, 2600, 'truck', 15))
-    elif callback.data == "office":
-        bot.register_next_step_handler(sent, work(callback, 'Офисный работник', 75, 3600, 'office', 20))
-    elif callback.data == "fac":
-        bot.register_next_step_handler(sent, work(callback, 'Заводской работник', 55, 3000, 'fac', 30))
-    elif callback.data == "taxi":
-        bot.register_next_step_handler(sent, work(callback, 'Таксист', 65, 2600, 'taxi', 15))
-    elif callback.data == "Military":
-        bot.register_next_step_handler(sent, work(callback, 'Военный', 45, 9600, 'Military', 35))
+    if callback.data == "Уборщик":
+        bot.register_next_step_handler(sent, work(callback, 'Уборщик', 90, 1000, 25))
+    elif callback.data == "Шахтёр":
+        bot.register_next_step_handler(sent, work(callback, 'Шахтёр', 60, 7000, 40))
+    elif callback.data == "Заводской работник":
+        bot.register_next_step_handler(sent, work(callback, 'Заводской работник', 55, 3000, 30))
+    elif callback.data == "Офисный работник":
+        bot.register_next_step_handler(sent, work(callback, 'Офисный работник', 75, 3600, 20))
+    elif callback.data == "Таксист":
+        bot.register_next_step_handler(sent, work(callback, 'Таксист', 65, 2600, 15))
+    elif callback.data == "Водитель грузовика":
+        bot.register_next_step_handler(sent, work(callback, 'Водитель грузовика', 65, 2600, 15))        
+    elif callback.data == "Врач":
+        bot.register_next_step_handler(sent, work(callback, 'Врач', 75, 7500, 40))
+    elif callback.data == "Военный":
+        bot.register_next_step_handler(sent, work(callback, 'Военный', 45, 9600, 35))
 
 
 '''  elif callback.data == "crime":
         bot.register_next_step_handler(sent, YUY) ###'''
 
 
-def work(callback, name, chance, money, code, stam):
+def work(callback, name, chance, money, stam):
     sleep(randint(2, 5))
+    chance = int(chance)
+    money = int(money)
+    stam = int(stam)
     rand = randint(0, 100)
     sta = db.dbget('stamina_points', callback.message.chat.id)
+    sta = int(sta)
     healp = db.dbget('heal_points', callback.message.chat.id)
+    healp = int(healp)
     day = db.dbget('day_surv', callback.message.chat.id)
-    if int(sta) > 0 and healp > 0:
-        if rand <= chance and works_status[code] == True:
+    day = int(day)
+    if sta > 0 and healp > 0:
+        if rand <= chance and works_status[name] == True:
             sta = db.dbget('stamina_points', callback.message.chat.id)
-            sta = int(sta) - int(stam)
+            sta = sta - stam
             db.dbupdate('stamina_points', callback.message.chat.id, sta)
             profit = db.dbget('cash', callback.message.chat.id)
-            profit = int(profit) + int(money)
+            profit = int(profit) + money
             db.dbupdate('cash', callback.message.chat.id, profit)
             bot.send_message(callback.message.chat.id,
                              f'Вы успешно выполнили работу в должности "{name}", и заработали {money} ботлингов, потеряв {stam} очков усталости.')
         elif rand > chance:
             bot.send_message(callback.message.chat.id,
                              f'Вам не повезло, на вашей смене произошло ЧП. Вы не получили зарплату, но потеряли {stam} очков усталости. Эта работа теперь недоступна на 2 дня.')
-            works_status[name] = int(day)
+            works_status[name] = day
             sta = db.dbget('stamina_points', callback.message.chat.id)
-            sta = int(sta) - int(stam)
+            sta = sta - stam
             db.dbupdate('stamina_points', callback.message.chat.id, sta)
-        elif 2 > day - works_status[code]:
+        elif 2 > day - works_status[name]:
             bot.send_message(callback.message.chat.id,
                              'Эта работа ещё не восстановилась после недавнего ЧП')
     elif sta <= 0:
@@ -147,7 +153,7 @@ def work(callback, name, chance, money, code, stam):
         bot.send_message(callback.message.chat.id,
                          f'Вы слишком устали, отдохните пока ещё можете, работа подождёт (ваше здоровье - {healp})')
     elif healp <= 0:
-        bot.send_message(callback.message.chat.id, 'Смертц')
+        bot.send_message(callback.message.chat.id, f'Вы умерли прямо на работе.\nВы прожили {day} дней\n/start для начала новой игры')
         sqlite3.connect('proekteko.db', check_same_thread=False).cursor.execute(
             f'DELETE FROM users WHERE user_id={callback.message.chat.id}')
 
@@ -157,12 +163,14 @@ def work(callback, name, chance, money, code, stam):
 @bot.message_handler(commands=['sleep'])
 def sleep(message):
     day = db.dbget('day_surv', message.chat.id)
+    day = int(day)
     lvl = db.dbget('house_lvl', message.chat.id)
     lvl = int(lvl)
     sta = db.dbget('stamina_points', message.chat.id)
     sta = int(sta)
     sta = sta + lvl * 20
     cash = db.dbget('cash', message.chat.id)
+    cash = int(cash)
     healp = db.dbget('heal_points', message.chat.id)
     healp = int(healp)
     dolg = db.dbget('dolg_to_doc', message.chat.id)
@@ -176,9 +184,9 @@ def sleep(message):
     else:
         if lvl == 1:
             money = 0
-        elif int(cash) >= money:
-            money = int(cash) - lvl * 100
-        elif lvl != 1 and int(cash) < money:
+        elif cash >= money:
+            money = cash - lvl * 100
+        elif lvl != 1 and cash < money:
             bot.send.message(
                 message.chat.id, 'Вам не хватило денег на коммуналку, вам пришлось продать свой дом и купить дом подешевле (коммуналка оплачена на сдачу)')
             money = 0
@@ -187,7 +195,7 @@ def sleep(message):
         if sta + sta < 100:
             db.dbupdate('stamina_points', message.chat.id, sta)
             day = db.dbget('day_surv', message.chat.id)
-            day = int(day) + 1
+            day = day + 1
             db.dbupdate('day_surv', message.chat.id, day)
             db.dbupdate('cash', message.chat.id, money)
             bot.send_message(
@@ -195,7 +203,7 @@ def sleep(message):
         else:
             db.dbupdate('stamina_points', message.chat.id, 100)
             day = db.dbget('day_surv', message.chat.id)
-            day = int(day) + 1
+            day = day + 1
             db.dbupdate('day_surv', message.chat.id, day)
             bot.send_message(
                 message.chat.id, f'Вы поспали в своём доме {lvl}-го уровня но не восстановили очки усталости, из-за того, что вы не успели устать, но тем не менее вы потратили {money} ботлингов на коммуналку\nСегодня - {day}-й день вашего выживания.')
@@ -210,7 +218,7 @@ def passport(message):
     uday = db.dbget('day_surv', message.chat.id)
     uhouse = db.dbget('house_lvl', message.chat.id)
     udolg = db.dbget('dolg_to_doc', message.chat.id)
-    bot.send_message(message.chat.id, f'Ваша статистика, {uname}:\nБаланс: {ucash} ботлингов\nВаше здоровье: {uhp} очков здоровья\nВаша усталость: {usta} очков усталости\nВы выжили: {uday} дней\nВ сумме вы должны: {udolg} ботлингов\nХороший результат, но у гигачада лучше.')
+    bot.send_message(message.chat.id, text=f'*Ваша статистика, {uname}:*\n*Баланс:* *{ucash}* ботлингов\n*Уровень дома:* *{uhouse}*\n*Ваше здоровье:* *{uhp}* очков здоровья\n*Ваша усталость:* *{usta}* очков усталости\n*Вы выжили:* *{uday}* дней\n*В сумме вы должны:* *{udolg}* ботлингов\nХороший результат, но у гигачада лучше.', parse_mode='Markdown')
 
 
 
