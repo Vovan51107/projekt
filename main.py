@@ -185,11 +185,23 @@ def sleep(message):
         elif cash >= money:
             money = cash - lvl * 100
         elif lvl != 1 and cash < money:
+
             bot.send.message(
                 message.chat.id, 'Вам не хватило денег на коммуналку, вам пришлось продать свой дом и купить дом подешевле (коммуналка оплачена на сдачу)')
             money = 0
             lvl = lvl - 1
             db.dbupdate('house_lvl', message.chat.id, lvl)
+            lvl = db.dbget('house_lvl', message.chat.id)
+            lvl = int(lvl)
+            sta = db.dbget('stamina_points', message.chat.id)
+            sta = int(sta)
+            sta = sta + lvl * 20
+            db.dbupdate('stamina_points', message.chat.id, sta)
+            day = db.dbget('day_surv', message.chat.id)
+            day = day + 1
+            db.dbupdate('day_surv', message.chat.id, day)
+            db.dbupdate('cash', message.chat.id, money)
+            bot.send_message(message.chat.id, f'Вы поспали в своём доме {lvl}-го уровня и восстановили {lvl * 20} очков усталости и потратили {money} ботлингов на коммуналку\nСегодня - {day}-й день вашего выживания.')
         if sta + sta < 100:
             db.dbupdate('stamina_points', message.chat.id, sta)
             day = db.dbget('day_surv', message.chat.id)
