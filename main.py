@@ -115,7 +115,6 @@ def answer_callback(callback):
 
 
 def work(callback, name, chance, money, code, stam):
-    sleep(randint(2, 5))
     rand = randint(0, 100)
     sta = db.dbget('stamina_points', callback.message.chat.id)
     healp = db.dbget('heal_points', callback.message.chat.id)
