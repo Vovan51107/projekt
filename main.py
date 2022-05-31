@@ -38,6 +38,8 @@ db = Database()
 bot = telebot.TeleBot("5358126269:AAGiVX4xe6_2x7IBdjODm3y61aG2JgiPx5I")
 works_status = {'Уборщик': True, 'Шахтёр': True, 'Заводской работник': True, 'Офисный работник': True,
                 'Таксист': True, 'Водитель грузовика': True, 'Врач': True, 'Военный': True, }
+def keybode(texte):
+    return types.InlineKeyboardButton(text=texte, callback_data=texte)
 print('Бот включён')
 
 
@@ -74,18 +76,8 @@ def work_choice(message):
     data = db.dbgetdata('user_id', message.chat.id)
     if data != None:
         start_keyboard = types.InlineKeyboardMarkup()
-        def keybode(texte):
-            return types.InlineKeyboardButton(text=texte, callback_data=texte)
-        cleaner = keybode('Уборщик')
-        miner = keybode('Шахтёр')
-        factory = keybode('Заводской работник')
-        office = keybode('Офисный работник')
-        taxi = keybode('Таксист')
-        trucker = keybode('Водитель грузовика')
-        doctor = keybode('Врач')
-        military = keybode('Военный')
-        sent = '*Информация о работе:*\n*Уборщик:* Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\n*Шахтёр:* Зарплата-7000 ботлингов, Потребление очков усталости-40, Шанс успеха 60%\n*Заводской работник:* Зарплата-3000 ботлингов, Потребление очков усталости-30, Шанс успеха-55%\n*Офисный работник:* Зарплата-3600 ботлингов, Потребление очков усталости-20, Шанс успеха 75%\n*Таксист:* Зарплата-2600 ботлингов, Потребление очков усталости-15, Шанс успеха 65%\n*Водитель грузовика:* Зарплата-3500 ботлингов, Потребление очков усталости-25, Шанс успеха 65%\n*Врач:* Зарплата-7500 ботлингов, Потребление очков усталости-40, Шанс успеха 75%\n*Военный:* Зарплата-9600 ботлингов, Потребление очков усталости-35, Шанс успеха 45%'
-        start_keyboard.add(cleaner, miner, factory, office, taxi, trucker, doctor, military)
+        sent = '*Информация о работе:*\n*Уборщик:* Зарплата-1000 ботлингов, Потребление очков усталости-25, Шанс успеха-90%\n*Шахтёр:* Зарплата-7000 ботлингов, Потребление очков усталости-40, Шанс успеха 60%\n*Заводской работник:* Зарплата-3000 ботлингов, Потребление очков усталости-30, Шанс успеха-55%\n*Офисный работник:* Зарплата-3600 ботлингов, Потребление очков усталости-20, Шанс успеха 75%\n*Таксист:* Зарплата-2600 ботлингов, Потребление очков усталости-15, Шанс успеха 65%\n*Водитель грузовика:* Зарплата-3500 ботлингов, Потребление очков усталости-25, Шанс успеха 65%\n*Врач:* Зарплата-7500 ботлингов, Потребление очков усталости-40, Шанс успеха 75%\n*Военный:* Зарплата-9600 ботлингов, Потребление очков усталости-35, Шанс успеха 45%\n*!!!После выбора работы, команду вводить дважды!!!*'
+        start_keyboard.add(keybode('Уборщик'), keybode('Шахтёр'), keybode('Заводской работник'), keybode('Офисный работник'), keybode('Таксист'), keybode('Водитель грузовика'), keybode('Врач'), keybode('Военный'))
         bot.send_message(message.chat.id, sent, parse_mode= 'Markdown', reply_markup=start_keyboard)
 
 
@@ -93,6 +85,8 @@ def work_choice(message):
 def answer_callback(callback):
     sent = bot.send_message(callback.message.chat.id, "Вы ушли на работу")
     match callback.data:
+        case None:
+            pass
         case 'Уборщик':
             bot.register_next_step_handler(sent, work(callback, 'Уборщик', 90, 1000, 25))
         case 'Шахтёр':
@@ -109,8 +103,7 @@ def answer_callback(callback):
             bot.register_next_step_handler(sent, work(callback, 'Врач', 75, 7500, 40))
         case 'Военный':
             bot.register_next_step_handler(sent, work(callback, 'Военный', 45, 9600, 35))
-        case None:
-            pass
+
 
 
 
@@ -205,6 +198,7 @@ def sleep(message):
         if sta + sta < 100:
             db.dbupdate('stamina_points', message.chat.id, sta)
             day = db.dbget('day_surv', message.chat.id)
+            day = int(day)
             day = day + 1
             db.dbupdate('day_surv', message.chat.id, day)
             db.dbupdate('cash', message.chat.id, money)
@@ -213,6 +207,7 @@ def sleep(message):
         else:
             db.dbupdate('stamina_points', message.chat.id, 100)
             day = db.dbget('day_surv', message.chat.id)
+            day = int(day)
             day = day + 1
             db.dbupdate('day_surv', message.chat.id, day)
             bot.send_message(
